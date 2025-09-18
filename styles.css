@@ -1,0 +1,159 @@
+/* ================================
+   How to PMM – Shared Stylesheet
+   ================================ */
+
+/* Fonts & basic reset */
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  background: #ffffff;
+  color: #111827;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Colors as CSS variables */
+:root {
+  --midnight: #191970;
+  --purple: #871674;
+  --crimson: #cc3766;
+  --coral: #f67255;
+  --amber: #ffb54f;
+  --lemon: #f9f871;
+  --acc1: #594d7d;
+  --acc2: #650000;
+
+  --grad: linear-gradient(
+    90deg,
+    #191970,
+    #00469b,
+    #006eb5,
+    #0094bf,
+    #00b9c0,
+    #54dcbe
+  );
+
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --bg: #ffffff;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--midnight);
+  text-decoration: none;
+}
+
+/* Layout helpers */
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Hero section */
+.hero {
+  background: var(--grad);
+  color: #fff;
+  padding: 64px 24px;
+}
+.hero-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(6px);
+}
+h1,
+h2,
+h3 {
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+h1 {
+  font-size: 36px;
+  font-weight: 700;
+}
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+}
+.sub {
+  opacity: 0.9;
+  margin-top: 8px;
+}
+
+/* Buttons */
+.cta {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--amber);
+  color: #111;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid #11111115;
+}
+
+/* Grid of cards */
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  padding: 24px;
+}
+@media (min-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  background: #fff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  border-color: #d9dbe0;
+}
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.muted {
+  color: var(--muted);
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
