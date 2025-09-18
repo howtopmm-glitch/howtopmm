@@ -13,8 +13,10 @@
   <!-- Top nav -->
   <div class="nav wrap">
     <a class="brand" href="/">How to PMM</a>
-    <nav>
+    <nav style="display:flex; gap:16px;">
+      <a class="muted" href="/" style="text-decoration:none;">Home</a>
       <a class="muted" href="/about.html" style="text-decoration:none;">About</a>
+      <a class="muted" href="/post1.html" style="text-decoration:none;">Posts</a>
     </nav>
   </div>
 
@@ -50,6 +52,7 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="wrap">© <span id="year"></span> How to PMM</footer>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
