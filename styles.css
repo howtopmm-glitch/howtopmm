@@ -157,3 +157,12 @@ footer {
   font-size: 14px;
   text-align: center;
 }
+
+/* Nav links */
+nav a {
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+nav a:hover {
+  color: var(--midnight);
+}
