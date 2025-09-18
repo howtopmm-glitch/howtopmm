@@ -5,59 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>How to PMM</title>
 
-  <!-- Inter for now; we'll add Geist via next/font when we move to Next.js -->
+  <!-- Fonts + Shared Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --midnight:#191970; --purple:#871674; --crimson:#cc3766; --coral:#f67255;
-      --amber:#ffb54f; --lemon:#f9f871; --acc1:#594d7d; --acc2:#650000;
-      --grad: linear-gradient(90deg,#191970,#00469b,#006eb5,#0094bf,#00b9c0,#54dcbe);
-      --text:#111827; --muted:#6b7280; --border:#e5e7eb; --bg:#ffffff;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; background:var(--bg); color:var(--text);
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height:1.6;
-    }
-    .hero{
-      background:var(--grad); color:#fff; padding:64px 24px;
-    }
-    .wrap{max-width:960px; margin:0 auto;}
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:16px 24px; border-bottom:1px solid var(--border);
-    }
-    .brand{
-      font-weight:700; letter-spacing:.2px; color:var(--midnight); text-decoration:none;
-    }
-    .hero-card{
-      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2);
-      border-radius:20px; padding:28px; backdrop-filter: blur(6px);
-    }
-    h1,h2,h3{margin:0 0 8px 0; line-height:1.2;}
-    h1{font-size:36px; font-weight:700;}
-    h2{font-size:22px; font-weight:600;}
-    .sub{opacity:.9; margin-top:8px}
-    .cta{
-      display:inline-block; margin-top:18px; padding:10px 16px; border-radius:999px;
-      background:#ffb54f; color:#111; font-weight:600; text-decoration:none; border:1px solid #11111115;
-    }
-    .grid{display:grid; gap:16px; grid-template-columns:1fr; padding:24px;}
-    @media(min-width:800px){ .grid{grid-template-columns:repeat(3,1fr);} }
-    .card{
-      border:1px solid var(--border); border-radius:16px; padding:18px; background:#fff;
-      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-    }
-    .card:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.06); border-color:#d9dbe0; }
-    .tag{
-      display:inline-block; font-size:12px; padding:4px 10px; border-radius:999px;
-      background:#f8fafc; border:1px solid var(--border); color:var(--muted); margin-bottom:8px;
-    }
-    .muted{color:var(--muted)}
-    footer{border-top:1px solid var(--border); padding:24px; color:var(--muted); font-size:14px;}
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <!-- Top nav -->
