@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Awesome Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font links updated for Inter and Geist --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://assets.vercel.com/raw/upload/v1699912845/geist/font.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overscroll-behavior: none; /* Prevents scroll chaining */
+            /* overflow-x: hidden; has been removed for a more robust solution */
+        }
+        /* Custom styles for the advanced glass/bevel effect */
+        .glass-border-effect {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 0 20px 10px rgba(255, 255, 255, 1);
+        }
+        .glass-border-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.8),
+                transparent
+            );
+        }
+        .glass-border-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.8),
+                transparent,
+                rgba(255, 255, 255, 0.3)
+            );
+        }
+
+        /* Styles for the sticky scroll testimonial section */
+        #testimonials-wrapper {
+            position: relative;
+        }
+
+        .testimonial-card {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateX(100%);
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        .testimonial-card.is-visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* New hover effect for product grid */
+        #product-grid .group {
+            transition: all 0.3s ease-in-out;
+        }
+        #product-grid:hover .group:not(:hover) {
+            filter: grayscale(90%);
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        /* New hover effect for mega menu */
+        #mega-menu-grid:hover > div:not(:hover) {
+            filter: grayscale(90%);
+            opacity: 0.5;
+        }
+
+        /* New CSS for accessible menu state */
+        #mega-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        #product-menu-wrapper.is-open #mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        /* Styles for scroll-in animations - RESTORED */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+    <script>
+        // Custom Tailwind CSS configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#191970', /* Midnight Blue (Main) */
+                        'secondary': '#871674', /* Purple (Accent/Text) */
+                        'brand-white': '#fff8f0', /* Off-white */
+                        'brand-black': '#08070d', /* Near-black */
+                        'cta': '#ffb54f', /* Amber (CTA Default) */
+                        'cta-accent': '#f67255', /* Coral (CTA Hover) */
+                        'crimson': '#cc3766', /* New Extra */
+                        'lemon': '#f9f871', /* New Extra */
+                        'charcoal': '#1A1A1D',
+                        'cloud': '#F5F5F7',
+                        'mist': '#B4B4C0'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        geist: ['Geist', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-white text-brand-black font-inter">
+
+    <!-- Header: Now controls base text color and transitions smoothly -->
+    <header id="main-header" class="bg-brand-white shadow-sm sticky top-0 z-50 text-brand-black transition-colors duration-500">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo Placeholder: Inherits color -->
+            <div class="text-2xl font-bold font-geist">
+                <a href="#">YourLogo</a>
+            </div>
+            <!-- Navigation -->
+            <nav class="hidden md:flex space-x-8 items-center font-geist">
+                <!-- Links now have a base hover class and a new specific class -->
+                <a href="#" class="main-nav-link hover:text-secondary transition duration-300">Home</a>
+                
+                <!-- Product Dropdown Wrapper for event handling -->
+                <div id="product-menu-wrapper" class="group">
+                    <!-- Button updated for accessibility -->
+                    <button id="product-menu-button" aria-haspopup="true" aria-expanded="false" class="main-nav-link hover:text-secondary transition duration-300 flex items-center">
+                        Products
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <!-- Mega Menu Dropdown: Visibility classes removed, now controlled by CSS/JS -->
+                    <div id="mega-menu" class="absolute left-0 right-0 mt-2 bg-brand-white rounded-b-lg shadow-xl z-10">
+                        <div class="container mx-auto px-6 py-8">
+                            <div id="mega-menu-grid" class="grid grid-cols-4 gap-8 text-brand-black">
+                                <!-- Column 1 --><div class="group/column p-2 rounded-lg transition-all duration-300 hover:ring-2 hover:ring-mist hover:bg-cloud">
+                                    <div class="overflow-hidden rounded-lg mb-4">
+                                        <img id="mega-menu-img-1" src="" alt="Product 1 Thumbnail" class="w-full h-24 object-cover transition-transform duration-300 group-hover/column:scale-105">
+                                    </div>
+                                    <a href="#" class="block text-lg font-semibold mb-4 border-b-2 border-primary pb-2 font-geist hover:text-secondary transition-colors duration-200">Product 1</a>
+                                    <ul class="space-y-3 mt-4 font-inter">
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 1a</a></li>
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 1b</a></li>
+                                    </ul>
+                                </div>
+                                <!-- Column 2 --><div class="group/column p-2 rounded-lg transition-all duration-300 hover:ring-2 hover:ring-mist hover:bg-cloud">
+                                    <div class="overflow-hidden rounded-lg mb-4">
+                                        <img id="mega-menu-img-2" src="" alt="Product 2 Thumbnail" class="w-full h-24 object-cover transition-transform duration-300 group-hover/column:scale-105">
+                                    </div>
+                                    <a href="#" class="block text-lg font-semibold mb-4 border-b-2 border-primary pb-2 font-geist hover:text-secondary transition-colors duration-200">Product 2</a>
+                                    <ul class="space-y-3 mt-4 font-inter">
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 2a</a></li>
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 2b</a></li>
+                                    </ul>
+                                </div>
+                                <!-- Column 3 --><div class="group/column p-2 rounded-lg transition-all duration-300 hover:ring-2 hover:ring-mist hover:bg-cloud">
+                                    <div class="overflow-hidden rounded-lg mb-4">
+                                        <img id="mega-menu-img-3" src="" alt="Product 3 Thumbnail" class="w-full h-24 object-cover transition-transform duration-300 group-hover/column:scale-105">
+                                    </div>
+                                    <a href="#" class="block text-lg font-semibold mb-4 border-b-2 border-primary pb-2 font-geist hover:text-secondary transition-colors duration-200">Product 3</a>
+                                    <ul class="space-y-3 mt-4 font-inter">
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 3a</a></li>
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 3b</a></li>
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 3c</a></li>
+                                    </ul>
+                                </div>
+                                <!-- Column 4 --><div class="group/column p-2 rounded-lg transition-all duration-300 hover:ring-2 hover:ring-mist hover:bg-cloud">
+                                    <div class="overflow-hidden rounded-lg mb-4">
+                                        <img id="mega-menu-img-4" src="" alt="Product 4 Thumbnail" class="w-full h-24 object-cover transition-transform duration-300 group-hover/column:scale-105">
+                                    </div>
+                                    <a href="#" class="block text-lg font-semibold mb-4 border-b-2 border-primary pb-2 font-geist hover:text-secondary transition-colors duration-200">Product 4</a>
+                                    <ul class="space-y-3 mt-4 font-inter">
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 4a</a></li>
+                                        <li><a href="#" class="hover:text-secondary transition-colors duration-200">Product 4b</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="main-nav-link hover:text-secondary transition duration-300">Pricing</a>
+                <a href="#" class="main-nav-link hover:text-secondary transition duration-300">Back to Blog</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden flex items-center">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden fixed inset-0 bg-brand-white z-[100] flex flex-col items-center justify-center">
+        <button id="mobile-menu-close-button" class="absolute top-5 right-5 text-brand-black">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <nav class="flex flex-col space-y-8 text-center font-geist text-2xl text-brand-black">
+            <a href="#" class="mobile-nav-link">Home</a>
+            <a href="#" class="mobile-nav-link">Products</a>
+            <a href="#" class="mobile-nav-link">Pricing</a>
+            <a href="#" class="mobile-nav-link">Back to Blog</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-primary to-secondary">
+            <div class="relative z-10">
+                <!-- Part 1: Text Content -->
+                <div class="container mx-auto px-6 pt-16 md:pt-24 text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold text-brand-white leading-tight mb-4 font-geist">Discover Our Innovative Products</h1>
+                    <p class="text-lg md:text-xl text-brand-white max-w-3xl mx-auto mb-8">We create amazing things that solve real-world problems. Explore our collection of carefully crafted products designed just for you.</p>
+                </div>
+
+                <!-- Part 2: Scalable Image Container -->
+                <div id="hero-image-wrapper" class="my-12 mx-auto max-w-full transition-all duration-700 ease-in-out">
+                     <div class="overflow-hidden transition-all duration-700 ease-in-out">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Ardour_6.7_Recorder_Editor_Mixer.png" alt="Ardour audio software interface" class="w-full h-auto rounded-xl">
+                     </div>
+                </div>
+
+                <!-- Part 3: Button -->
+                <div class="container mx-auto px-6 pb-16 md:pb-24 text-center">
+                     <a href="#" class="bg-cta text-brand-black font-semibold px-8 py-3 rounded-lg hover:bg-cta-accent transition duration-300 ease-in-out transform hover:scale-105 font-geist">Explore Products</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="bg-brand-white py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-black font-geist">Our Signature Collection</h2>
+                    <p class="text-lg text-brand-black mt-2">Each product is designed with precision and care.</p>
+                </div>
+                <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Product 1 -->
+                    <div class="bg-brand-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition duration-300 group animate-on-scroll" style="transition-delay: 100ms;">
+                        <img id="product-img-1" src="https://upload.wikimedia.org/wikipedia/commons/4/40/Headphones_1.jpg" alt="A pair of modern headphones" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 text-brand-black font-geist">Product One</h3>
+                            <p class="text-brand-black mb-4">A brief, catchy description of what makes this product unique and desirable.</p>
+                            <a href="#" class="text-secondary font-semibold hover:text-cta-accent hover:underline font-geist">Learn More &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="bg-brand-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition duration-300 group animate-on-scroll" style="transition-delay: 200ms;">
+                        <img id="product-img-2" src="https://upload.wikimedia.org/wikipedia/commons/9/91/MacBook_Pro_16_%28M1_Pro%2C_2021%29_-_Wikipedia.jpg" alt="A silver MacBook Pro laptop" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 text-brand-black font-geist">Product Two</h3>
+                            <p class="text-brand-black mb-4">A brief, catchy description of what makes this product unique and desirable.</p>
+                            <a href="#" class="text-secondary font-semibold hover:text-cta-accent hover:underline font-geist">Learn More &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Product 3 -->
+                    <div class="bg-brand-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition duration-300 group animate-on-scroll" style="transition-delay: 300ms;">
+                        <img id="product-img-3" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Teke_bottle.JPG" alt="I can't remember what this is" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 text-brand-black font-geist">Product Three</h3>
+                            <p class="text-brand-black mb-4">A brief, catchy description of what makes this product unique and desirable.</p>
+                            <a href="#" class="text-secondary font-semibold hover:text-cta-accent hover:underline font-geist">Learn More &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Product 4 -->
+                    <div class="bg-brand-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition duration-300 group animate-on-scroll" style="transition-delay: 400ms;">
+                        <img id="product-img-4" src="https://upload.wikimedia.org/wikipedia/commons/6/69/Gloves_MET_C.I.42.136ab_F.jpg" alt="A pair of ornate historical gloves" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 text-brand-black font-geist">Product Four</h3>
+                            <p class="text-brand-black mb-4">A brief, catchy description of what makes this product unique and desirable.</p>
+                            <a href="#" class="text-secondary font-semibold hover:text-cta-accent hover:underline font-geist">Learn More &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials-wrapper" class="bg-gradient-to-b from-primary to-secondary py-16 md:py-24">
+            <div class="sticky top-0 h-screen flex flex-col justify-center items-center">
+                 <div class="container mx-auto px-6 relative">
+                    <div class="text-center mb-12">
+                        <!-- Text color updated to brand-white -->
+                        <h2 class="text-3xl md:text-4xl font-bold text-brand-white font-geist">What Others Say...</h2>
+                        <p class="text-lg text-brand-white mt-2">Real feedback from our amazing customers.</p>
+                    </div>
+                    <div class="relative w-full max-w-2xl mx-auto overflow-hidden" style="height: 250px;">
+                        <!-- Testimonials will be absolutely positioned here -->
+                        <div class="testimonial-card absolute w-full">
+                            <div class="bg-brand-white p-8 rounded-lg shadow-lg relative overflow-hidden border-l-8 border-cta">
+                                <svg class="absolute -top-4 -left-2 w-32 h-32 text-secondary opacity-10" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063 c-0.813,0-1.563-0.125-2.25-0.375c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875 c0.313-0.625,0.75-1.313,1.313-2.063c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5 c-0.25-0.5-0.563-1-0.938-1.5c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938 c0.125-0.25,0.313-0.438,0.563-0.563c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938 c0.938,0.625,1.688,1.375,2.313,2.25C10.75,17.438,11.188,18.813,11.313,20.313z M27.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313 c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063c-0.813,0-1.563-0.125-2.25-0.375 c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875c0.313-0.625,0.75-1.313,1.313-2.063 c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5c-0.25-0.5-0.563-1-0.938-1.5 c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938c0.125-0.25,0.313-0.438,0.563-0.563 c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938c0.938,0.625,1.688,1.375,2.313,2.25 C26.75,17.438,27.188,18.813,27.313,20.313z"></path></svg>
+                                <p class="text-brand-black text-lg mb-6 relative z-10">“The coaches here actually listen and build a plan that fits my life. I’m stronger, faster, and finally enjoy training again.”</p>
+                                <div class="flex items-center relative z-10">
+                                    <img src="https://placehold.co/64x64/705fab/fff8f0?text=MP" alt="Avatar for Max Powerlift" class="w-12 h-12 rounded-full mr-4 border-2 border-primary">
+                                    <div class="font-geist">
+                                        <cite class="text-secondary font-bold not-italic">Max Powerlift</cite>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card absolute w-full">
+                            <div class="bg-brand-white p-8 rounded-lg shadow-lg relative overflow-hidden border-l-8 border-cta">
+                                <svg class="absolute -top-4 -left-2 w-32 h-32 text-secondary opacity-10" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063 c-0.813,0-1.563-0.125-2.25-0.375c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875 c0.313-0.625,0.75-1.313,1.313-2.063c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5 c-0.25-0.5-0.563-1-0.938-1.5c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938 c0.125-0.25,0.313-0.438,0.563-0.563c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938 c0.938,0.625,1.688,1.375,2.313,2.25C10.75,17.438,11.188,18.813,11.313,20.313z M27.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313 c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063c-0.813,0-1.563-0.125-2.25-0.375 c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875c0.313-0.625,0.75-1.313,1.313-2.063 c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5c-0.25-0.5-0.563-1-0.938-1.5 c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938c0.125-0.25,0.313-0.438,0.563-0.563 c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938c0.938,0.625,1.688,1.375,2.313,2.25 C26.75,17.438,27.188,18.813,27.313,20.313z"></path></svg>
+                                <p class="text-brand-black text-lg mb-6 relative z-10">“Fantastic facilities and a real sense of community. The group sessions push me but never leave me behind.”</p>
+                                <div class="flex items-center relative z-10">
+                                    <img src="https://placehold.co/64x64/705fab/fff8f0?text=GS" alt="Avatar for Gina Sprintwell" class="w-12 h-12 rounded-full mr-4 border-2 border-primary">
+                                    <div class="font-geist">
+                                        <cite class="text-secondary font-bold not-italic">Gina Sprintwell</cite>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card absolute w-full">
+                           <div class="bg-brand-white p-8 rounded-lg shadow-lg relative overflow-hidden border-l-8 border-cta">
+                                <svg class="absolute -top-4 -left-2 w-32 h-32 text-secondary opacity-10" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063 c-0.813,0-1.563-0.125-2.25-0.375c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875 c0.313-0.625,0.75-1.313,1.313-2.063c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5 c-0.25-0.5-0.563-1-0.938-1.5c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938 c0.125-0.25,0.313-0.438,0.563-0.563c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938 c0.938,0.625,1.688,1.375,2.313,2.25C26.75,17.438,27.188,18.813,27.313,20.313z M27.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313 c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063c-0.813,0-1.563-0.125-2.25-0.375 c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875c0.313-0.625,0.75-1.313,1.313-2.063 c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5c-0.25-0.5-0.563-1-0.938-1.5 c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938c0.125-0.25,0.313-0.438,0.563-0.563 c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938c0.938,0.625,1.688,1.375,2.313,2.25 C26.75,17.438,27.188,18.813,27.313,20.313z"></path></svg>
+                                <p class="text-brand-black text-lg mb-6 relative z-10">“After just three months my sprint times dropped and my confidence skyrocketed. The personalized attention makes all the difference.”</p>
+                                <div class="flex items-center relative z-10">
+                                    <img src="https://placehold.co/64x64/705fab/fff8f0?text=BI" alt="Avatar for Brock Ironson" class="w-12 h-12 rounded-full mr-4 border-2 border-primary">
+                                    <div class="font-geist">
+                                        <cite class="text-secondary font-bold not-italic">Brock Ironson</cite>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card absolute w-full">
+                            <div class="bg-brand-white p-8 rounded-lg shadow-lg relative overflow-hidden border-l-8 border-cta">
+                                <svg class="absolute -top-4 -left-2 w-32 h-32 text-secondary opacity-10" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063 c-0.813,0-1.563-0.125-2.25-0.375c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875 c0.313-0.625,0.75-1.313,1.313-2.063c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5 c-0.25-0.5-0.563-1-0.938-1.5c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938 c0.125-0.25,0.313-0.438,0.563-0.563c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938 c0.938,0.625,1.688,1.375,2.313,2.25C26.75,17.438,27.188,18.813,27.313,20.313z M27.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313 c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063c-0.813,0-1.563-0.125-2.25-0.375 c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875c0.313-0.625,0.75-1.313,1.313-2.063 c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5c-0.25-0.5-0.563-1-0.938-1.5 c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938c0.125-0.25,0.313-0.438,0.563-0.563 c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938c0.938,0.625,1.688,1.375,2.313,2.25 C26.75,17.438,27.188,18.813,27.313,20.313z"></path></svg>
+                                <p class="text-brand-black text-lg mb-6 relative z-10">“Clean, modern gym, smart programming, and trainers who care about technique. I finally fixed nagging knee pain while getting fitter.”</p>
+                                <div class="flex items-center relative z-10">
+                                    <img src="https://placehold.co/64x64/705fab/fff8f0?text=FF" alt="Avatar for Felicity Flexor" class="w-12 h-12 rounded-full mr-4 border-2 border-primary">
+                                    <div class="font-geist">
+                                        <cite class="text-secondary font-bold not-italic">Felicity Flexor</cite>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card absolute w-full">
+                           <div class="bg-brand-white p-8 rounded-lg shadow-lg relative overflow-hidden border-l-8 border-cta">
+                                <svg class="absolute -top-4 -left-2 w-32 h-32 text-secondary opacity-10" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063 c-0.813,0-1.563-0.125-2.25-0.375c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875 c0.313-0.625,0.75-1.313,1.313-2.063c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5 c-0.25-0.5-0.563-1-0.938-1.5c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938 c0.125-0.25,0.313-0.438,0.563-0.563c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938 c0.938,0.625,1.688,1.375,2.313,2.25C26.75,17.438,27.188,18.813,27.313,20.313z M27.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313 c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063c-0.813,0-1.563-0.125-2.25-0.375 c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875c0.313-0.625,0.75-1.313,1.313-2.063 c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5c-0.25-0.5-0.563-1-0.938-1.5 c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938c0.125-0.25,0.313-0.438,0.563-0.563 c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938c0.938,0.625,1.688,1.375,2.313,2.25 C26.75,17.438,27.188,18.813,27.313,20.313z"></path></svg>
+                                <p class="text-brand-black text-lg mb-6 relative z-10">“Their youth program is top notch — my son loves the drills and has improved so much both on and off the field.”</p>
+                                <div class="flex items-center relative z-10">
+                                    <img src="https://placehold.co/64x64/705fab/fff8f0?text=TT" alt="Avatar for Tommy Touchdown" class="w-12 h-12 rounded-full mr-4 border-2 border-primary">
+                                    <div class="font-geist">
+                                        <cite class="text-secondary font-bold not-italic">Tommy Touchdown</cite>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card absolute w-full">
+                           <div class="bg-brand-white p-8 rounded-lg shadow-lg relative overflow-hidden border-l-8 border-cta">
+                                <svg class="absolute -top-4 -left-2 w-32 h-32 text-secondary opacity-10" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063 c-0.813,0-1.563-0.125-2.25-0.375c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875 c0.313-0.625,0.75-1.313,1.313-2.063c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5 c-0.25-0.5-0.563-1-0.938-1.5c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938 c0.125-0.25,0.313-0.438,0.563-0.563c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938 c0.938,0.625,1.688,1.375,2.313,2.25C26.75,17.438,27.188,18.813,27.313,20.313z M27.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313 c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063c-0.813,0-1.563-0.125-2.25-0.375 c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875c0.313-0.625,0.75-1.313,1.313-2.063 c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5c-0.25-0.5-0.563-1-0.938-1.5 c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938c0.125-0.25,0.313-0.438,0.563-0.563 c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938c0.938,0.625,1.688,1.375,2.313,2.25 C26.75,17.438,27.188,18.813,27.313,20.313z"></path></svg>
+                                <p class="text-brand-black text-lg mb-6 relative z-10">“Great variety of classes, flexible scheduling, and trainers who actually explain why we do each exercise. Highly recommend.”</p>
+                                <div class="flex items-center relative z-10">
+                                    <img src="https://placehold.co/64x64/705fab/fff8f0?text=SM" alt="Avatar for Sofia Martinez" class="w-12 h-12 rounded-full mr-4 border-2 border-primary">
+                                    <div class="font-geist">
+                                        <cite class="text-secondary font-bold not-italic">Sofia Martinez</cite>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card absolute w-full">
+                            <div class="bg-brand-white p-8 rounded-lg shadow-lg relative overflow-hidden border-l-8 border-cta">
+                                <svg class="absolute -top-4 -left-2 w-32 h-32 text-secondary opacity-10" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063 c-0.813,0-1.563-0.125-2.25-0.375c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875 c0.313-0.625,0.75-1.313,1.313-2.063c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5 c-0.25-0.5-0.563-1-0.938-1.5c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938 c0.125-0.25,0.313-0.438,0.563-0.563c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938 c0.938,0.625,1.688,1.375,2.313,2.25C26.75,17.438,27.188,18.813,27.313,20.313z M27.313,20.313c-0.438,1.25-1.25,2.313-2.188,3.313 c-1.063,1-2.25,1.813-3.75,2.5c-1.5,0.688-2.875,1.063-4.375,1.063c-0.813,0-1.563-0.125-2.25-0.375 c-0.688-0.25-1.125-0.688-1.313-1.313c-0.188-0.625-0.125-1.25,0.125-1.875c0.313-0.625,0.75-1.313,1.313-2.063 c0.563-0.75,1-1.375,1.25-1.875c0.313-0.5,0.438-1,0.438-1.5c0-0.5-0.125-1-0.375-1.5c-0.25-0.5-0.563-1-0.938-1.5 c-0.375-0.5-0.688-0.938-0.938-1.313c-0.25-0.375-0.313-0.688-0.188-0.938c0.125-0.25,0.313-0.438,0.563-0.563 c0.25-0.125,0.563-0.188,0.938-0.188c1.125,0,2.125,0.313,3.063,0.938c0.938,0.625,1.688,1.375,2.313,2.25 C26.75,17.438,27.188,18.813,27.313,20.313z"></path></svg>
+                                <p class="text-brand-black text-lg mb-6 relative z-10">“I joined for performance training and and stayed for the community. Real results, zero ego — exactly what I needed.”</p>
+                                <div class="flex items-center relative z-10">
+                                    <img src="https://placehold.co/64x64/705fab/fff8f0?text=BB" alt="Avatar for Benny Benchpress" class="w-12 h-12 rounded-full mr-4 border-2 border-primary">
+                                    <div class="font-geist">
+                                        <cite class="text-secondary font-bold not-italic">Benny Benchpress</cite>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </section>
+    
+    <!-- Footer --><footer class="bg-brand-white border-t border-primary">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="text-2xl font-bold text-brand-black mb-4 md:mb-0 font-geist">
+                    <a href="#">YourLogo</a>
+                </div>
+                <div class="mb-4 md:mb-0 font-geist">
+                    <a href="#" class="text-brand-black hover:text-secondary transition duration-300">Back to Blog</a>
+                </div>
+                <p class="text-brand-black">&copy; 2025 Your Company. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Element Selections ---
+            const heroImageWrapper = document.getElementById('hero-image-wrapper');
+            const innerHeroDiv = heroImageWrapper ? heroImageWrapper.querySelector('div') : null;
+            const testimonialsWrapper = document.getElementById('testimonials-wrapper');
+            const testimonialCards = testimonialsWrapper ? testimonialsWrapper.querySelectorAll('.testimonial-card') : [];
+            const header = document.querySelector('header');
+            const navLinks = header ? header.querySelectorAll('.main-nav-link') : []; // Select only main links
+            const numTestimonials = testimonialCards.length;
+
+            // --- Accessible Mega Menu Elements ---
+            const menuWrapper = document.getElementById('product-menu-wrapper');
+            const menuButton = document.getElementById('product-menu-button');
+            const megaMenu = document.getElementById('mega-menu');
+            
+            // --- Mobile Menu Elements ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuCloseButton = document.getElementById('mobile-menu-close-button');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+            // Define the hover classes to toggle
+            const hoverLightClass = 'hover:text-secondary';
+            const hoverDarkClass = 'hover:text-lemon';
+
+            // --- Initial Setup ---
+            // Set the height of the wrapper to create the "scrollable area" for the sticky testimonials
+            if (testimonialsWrapper && numTestimonials > 0) {
+                testimonialsWrapper.style.height = `${numTestimonials * 100}vh`;
+            }
+
+            // --- Sync Mega Menu Images ---
+            for (let i = 1; i <= 4; i++) {
+                const productImg = document.getElementById(`product-img-${i}`);
+                const menuImg = document.getElementById(`mega-menu-img-${i}`);
+                if (productImg && menuImg) {
+                    menuImg.src = productImg.src;
+                }
+            }
+            
+            // --- Intersection Observer for Scroll-in Animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
+            elementsToAnimate.forEach(el => observer.observe(el));
+
+            // --- Accessible Mega Menu Logic ---
+            if (menuWrapper && menuButton && megaMenu) {
+                const openMenu = () => {
+                    menuWrapper.classList.add('is-open');
+                    menuButton.setAttribute('aria-expanded', 'true');
+                };
+
+                const closeMenu = () => {
+                    menuWrapper.classList.remove('is-open');
+                    menuButton.setAttribute('aria-expanded', 'false');
+                };
+
+                // Toggle with click
+                menuButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    menuWrapper.classList.contains('is-open') ? closeMenu() : openMenu();
+                });
+
+                // Open with hover for desktop users
+                menuWrapper.addEventListener('mouseenter', openMenu);
+                menuWrapper.addEventListener('mouseleave', closeMenu);
+
+                // Close with Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && menuWrapper.classList.contains('is-open')) {
+                        closeMenu();
+                        menuButton.focus(); // Return focus to the button
+                    }
+                });
+
+                // Close when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!menuWrapper.contains(e.target) && menuWrapper.classList.contains('is-open')) {
+                        closeMenu();
+                    }
+                });
+            }
+
+
+            // --- Mobile Menu Logic ---
+            const toggleMenu = () => {
+                mobileMenu.classList.toggle('hidden');
+            };
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', toggleMenu);
+            }
+            if (mobileMenuCloseButton && mobileMenu) {
+                mobileMenuCloseButton.addEventListener('click', toggleMenu);
+            }
+            // Close menu when a link is clicked
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', toggleMenu);
+            });
+
+
+            // --- Main Scroll Handler ---
+            function handlePageScroll() {
+                // 1. Hero Image Scaling Effect (Unchanged)
+                if (heroImageWrapper && innerHeroDiv) {
+                    if (window.scrollY > 50) {
+                        heroImageWrapper.classList.remove('max-w-full');
+                        heroImageWrapper.classList.add('max-w-4xl', 'px-6', 'lg:px-0');
+                        innerHeroDiv.classList.add('glass-border-effect', 'rounded-[20px]', 'border', 'border-white/30', 'bg-white/15', 'backdrop-blur-[15px]', 'p-2');
+                    } else {
+                        heroImageWrapper.classList.remove('max-w-4xl', 'px-6', 'lg:px-0');
+                        heroImageWrapper.classList.add('max-w-full');
+                        innerHeroDiv.classList.remove('glass-border-effect', 'rounded-[20px]', 'border', 'border-white/30', 'bg-white/15', 'backdrop-blur-[15px]', 'p-2');
+                    }
+                }
+
+                // 2. Testimonial Card Animation (Unchanged)
+                if (testimonialsWrapper && numTestimonials > 0) {
+                    const wrapperRect = testimonialsWrapper.getBoundingClientRect();
+                    if (wrapperRect.bottom >= 0 && wrapperRect.top <= window.innerHeight) {
+                        const scrollableHeight = testimonialsWrapper.scrollHeight - window.innerHeight;
+                        const progress = -wrapperRect.top / scrollableHeight;
+                        const activeIndex = Math.min(numTestimonials - 1, Math.floor(progress * numTestimonials));
+
+                        testimonialCards.forEach((card, index) => {
+                            card.classList.toggle('is-visible', index === activeIndex);
+                        });
+                    }
+                }
+
+                // 3. Header Background, Text, and Accent Color Change
+                if (header && testimonialsWrapper) {
+                    const headerHeight = header.offsetHeight;
+                    const testimonialsRect = testimonialsWrapper.getBoundingClientRect();
+
+                    if (testimonialsRect.top <= headerHeight && testimonialsRect.bottom >= headerHeight) {
+                        // Enter Testimonials (DARK MODE)
+                        header.classList.remove('bg-brand-white', 'shadow-sm', 'text-brand-black');
+                        header.classList.add('bg-primary', 'text-brand-white');
+
+                        // Change accent color to LEMON for contrast
+                        navLinks.forEach(link => {
+                            link.classList.remove(hoverLightClass);
+                            link.classList.add(hoverDarkClass);
+                        });
+
+                    } else {
+                        // Exit Testimonials (LIGHT MODE)
+                        header.classList.remove('bg-primary', 'text-brand-white');
+                        header.classList.add('bg-brand-white', 'shadow-sm', 'text-brand-black');
+
+                        // Change accent color back to SECONDARY (Purple)
+                        navLinks.forEach(link => {
+                            link.classList.remove(hoverDarkClass);
+                            link.classList.add(hoverLightClass);
+                        });
+                    }
+                }
+            }
+
+            // --- Event Listeners and Initial Calls ---
+            window.addEventListener('scroll', handlePageScroll, { passive: true });
+            handlePageScroll(); // Run on load to set initial states
+        });
+    </script>
+
+</body>
+</html>
+
+
