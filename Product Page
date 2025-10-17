@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font links for Inter and Geist -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://assets.vercel.com/raw/upload/v1699912845/geist/font.css" rel="stylesheet">
+    <style>
+        body {
+            overscroll-behavior: none;
+        }
+    </style>
+    <script>
+        // Custom Tailwind CSS configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#191970', /* Midnight Blue */
+                        'secondary': '#871674', /* Purple */
+                        'brand-white': '#fff8f0',
+                        'brand-black': '#08070d',
+                        'cta': '#ffb54f', /* Amber */
+                        'cta-accent': '#f67255', /* Coral */
+                        'crimson': '#cc3766',
+                        'lemon': '#f9f871',
+                        'charcoal': '#1A1A1D',
+                        'cloud': '#F5F5F7',
+                        'mist': '#B4B4C0'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        geist: ['Geist', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cloud text-brand-black font-inter">
+
+    <!-- Header (Consistent with Homepage) -->
+    <header id="main-header" class="bg-brand-white shadow-sm sticky top-0 z-50 text-brand-black">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold font-geist">
+                <a href="index.html">YourLogo</a>
+            </div>
+            <nav class="hidden md:flex space-x-8 items-center font-geist">
+                <a href="index.html" class="main-nav-link hover:text-secondary transition duration-300">Home</a>
+                <!-- The mega menu is part of the homepage logic, so a simple link is used here -->
+                <a href="index.html#product-grid" class="main-nav-link hover:text-secondary transition duration-300">Products</a>
+                <a href="#" class="main-nav-link hover:text-secondary transition duration-300">Pricing</a>
+                <a href="index.html" class="main-nav-link hover:text-secondary transition duration-300">Back to Blog</a>
+            </nav>
+            <button class="md:hidden flex items-center">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Product Content -->
+    <main class="container mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <!-- Image Gallery -->
+            <div>
+                <div class="main-image mb-4 rounded-lg overflow-hidden shadow-lg">
+                    <img id="main-product-image" src="https://placehold.co/600x600/1A1A1D/F5F5F7?text=Product+Image" alt="Main product view" class="w-full h-auto object-cover">
+                </div>
+                <div class="thumbnail-grid grid grid-cols-4 gap-4">
+                    <img src="https://placehold.co/150x150/1A1A1D/F5F5F7?text=View+1" alt="Product thumbnail 1" class="thumbnail cursor-pointer rounded-md border-2 border-primary opacity-100">
+                    <img src="https://placehold.co/150x150/871674/F5F5F7?text=View+2" alt="Product thumbnail 2" class="thumbnail cursor-pointer rounded-md border-2 border-transparent opacity-70 hover:opacity-100 transition">
+                    <img src="https://placehold.co/150x150/cc3766/F5F5F7?text=View+3" alt="Product thumbnail 3" class="thumbnail cursor-pointer rounded-md border-2 border-transparent opacity-70 hover:opacity-100 transition">
+                    <img src="https://placehold.co/150x150/f67255/F5F5F7?text=View+4" alt="Product thumbnail 4" class="thumbnail cursor-pointer rounded-md border-2 border-transparent opacity-70 hover:opacity-100 transition">
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="lg:sticky top-28">
+                <h1 class="text-4xl font-bold font-geist text-primary mb-2">Product Name Goes Here</h1>
+                <p class="text-mist text-lg mb-4">A compelling one-sentence tagline about the product.</p>
+                <div class="price text-3xl font-geist font-semibold text-brand-black mb-6">$99.99</div>
+                <div class="prose max-w-none text-charcoal mb-8">
+                    <p>This is the main description area for the product. Explain its key benefits, what problem it solves, and who it's for. Keep it engaging and easy to read. Use a paragraph or two to tell the story of the product.</p>
+                </div>
+                <button class="w-full bg-cta text-brand-black font-semibold font-geist px-8 py-4 rounded-lg hover:bg-cta-accent transition duration-300 ease-in-out transform hover:scale-105">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="my-24 border-t border-mist pt-16">
+            <h2 class="text-3xl font-bold font-geist text-center text-primary mb-12">Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <!-- Feature 1 -->
+                <div class="feature-item">
+                    <div class="bg-brand-white inline-block p-4 rounded-full mb-4 shadow">
+                        <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold font-geist text-charcoal mb-2">Durable Design</h3>
+                    <p class="text-mist">Built to last with premium, long-lasting materials.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-item">
+                     <div class="bg-brand-white inline-block p-4 rounded-full mb-4 shadow">
+                        <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold font-geist text-charcoal mb-2">High Performance</h3>
+                    <p class="text-mist">Engineered for speed, efficiency, and power.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-item">
+                     <div class="bg-brand-white inline-block p-4 rounded-full mb-4 shadow">
+                        <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-14l-3 3m5 5l-3 3m-3-10l3 3m-3 5l3 3"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold font-geist text-charcoal mb-2">Easy to Use</h3>
+                    <p class="text-mist">Simple, intuitive controls for a seamless experience.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <div class="my-24 border-t border-mist pt-16">
+            <h2 class="text-3xl font-bold font-geist text-center text-primary mb-12">You Might Also Like</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Related Product (Reusing homepage card style) -->
+                <div class="bg-brand-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition duration-300 group">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Headphones_1.jpg" alt="A pair of modern headphones" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-brand-black font-geist">Another Product</h3>
+                        <p class="text-mist mb-4">A brief, catchy description of this other item.</p>
+                        <a href="#" class="text-secondary font-semibold hover:text-cta-accent hover:underline font-geist">View Details &rarr;</a>
+                    </div>
+                </div>
+                <!-- Add 3 more related products -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (Consistent with Homepage) -->
+    <footer class="bg-brand-white border-t border-mist">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                 <div class="text-2xl font-bold text-brand-black mb-4 md:mb-0 font-geist">
+                    <a href="index.html">YourLogo</a>
+                </div>
+                <div class="mb-4 md:mb-0 font-geist">
+                    <a href="index.html" class="text-brand-black hover:text-secondary transition duration-300">Back to Blog</a>
+                </div>
+                <p class="text-charcoal">&copy; 2025 Your Company. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainImage = document.getElementById('main-product-image');
+            const thumbnails = document.querySelectorAll('.thumbnail');
+
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    // Set main image src to clicked thumbnail src
+                    mainImage.src = this.src.replace('150x150', '600x600'); // Replace with appropriate larger image size/URL
+
+                    // Update styles
+                    thumbnails.forEach(t => {
+                        t.classList.remove('border-primary', 'opacity-100');
+                        t.classList.add('border-transparent', 'opacity-70');
+                    });
+                    this.classList.add('border-primary', 'opacity-100');
+                    this.classList.remove('border-transparent', 'opacity-70');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
